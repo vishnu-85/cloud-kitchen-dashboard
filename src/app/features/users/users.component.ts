@@ -37,7 +37,7 @@ import { UsersService } from '../../core/services/users.service';
               <tr class="border-t border-slate-200">
                 <td class="px-4 py-3">{{ user.name }}</td>
                 <td class="px-4 py-3 text-slate-600">{{ user.email }}</td>
-                <td class="px-4 py-3">{{ user.roleId }}</td>
+                <td class="px-4 py-3">{{ user.roleName }}</td>
                 <td class="px-4 py-3">
                   <span class="rounded-full px-2 py-1 text-xs font-medium" [ngClass]="user.isActive === 'active' ? 'bg-emerald-100 text-emerald-700' : user.isActive === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-600'">
                     {{ user.isActive}}
