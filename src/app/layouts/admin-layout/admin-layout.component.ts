@@ -49,7 +49,7 @@ import { AuthService } from '../../core/services/auth.service';
           </div>
         </aside>
 
-        <main class="flex-1">
+        <main class="flex-1 overflow-auto">
           <header class="border-b border-slate-200 bg-white/80 backdrop-blur-sm">
             <div class="flex items-center justify-between px-6 py-5">
               <div>
