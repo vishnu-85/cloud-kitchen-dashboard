@@ -23,4 +23,11 @@ export class ProductsService {
   remove(id: string): Observable<void> {
     return this.api.delete<void>(`/products/${id}`);
   }
+
+  downloadTemplate(): Observable<Blob> {
+    return this.api.getBlob('/product-data/product-template');
+  }
+  uploadProducts(file: FormData): Observable<void> {
+    return this.api.post('/product-data/product-upload', file);
+  }
 }

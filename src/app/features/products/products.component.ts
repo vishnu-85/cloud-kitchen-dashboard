@@ -15,6 +15,8 @@ export class ProductsComponent implements OnInit {
   private readonly service = inject(ProductsService);
   private readonly fb = inject(FormBuilder);
 
+  columns:string[]=[];
+  displayColumns:string[]=[];
   products:any = signal([]);
   loading = false;
   showForm = false;
@@ -52,6 +54,10 @@ export class ProductsComponent implements OnInit {
     this.errorMessage = '';
     this.service.getAll().subscribe({
       next: (data:any) => {
+        this.columns = Object.keys(data.data[0] || {});
+
+        this.columns = this.columns.filter(e=> e != "_id" &&  e != "__v")
+        this.displayColumns = this.columns.map(el => el.charAt(0).toUpperCase()+ el.slice(1))
         this.products.set(data.data);
         this.loading = false;
       },
@@ -98,4 +104,48 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
+
+
+  downloadTemplate(): void {
+    this.service.downloadTemplate().subscribe({
+      next: (blob: Blob) => {
+ 
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download =  `product_template_${Date.now()}.xlsx`;
+         document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.errorMessage = 'Unable to download template.';
+      }
+    });
+  }
+
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file && file.size > 0) {
+        const formData = new FormData();
+        formData.append('file', file);
+        this.uploadProducts(formData);
+    }
+  }
+
+  uploadProducts(formData: FormData): void {
+    this.service.uploadProducts(formData).subscribe({
+      next: () => {
+        console.log('Products uploaded successfully');
+        this.loadProducts();
+      },
+      error: () => {
+        this.errorMessage = 'Unable to upload products.';
+      }
+    }); 
+  }
+
+
 }
