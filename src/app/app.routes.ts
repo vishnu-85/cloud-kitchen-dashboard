@@ -47,14 +47,19 @@ export const routes: Routes = [
           import('./features/orders/orders.component').then((m) => m.OrdersComponent)
       },
       {
-        path: 'customers',
-        loadComponent: () =>
-          import('./features/customers/customers.component').then((m) => m.CustomersComponent)
-      },
-      {
         path: 'settings',
         loadComponent: () =>
           import('./features/settings/settings.component').then((m) => m.SettingsComponent)
+      },
+      {
+        path: 'movies',
+        loadComponent: () => 
+          import('./features/movies/movies').then((m)=>m.Movies)
+      },
+       {
+        path: 'movies/:id',
+        loadComponent: () => 
+          import('./features/movies/movie-detail/movie-details').then((m)=>m.MovieDetails)
       }
     ]
   },

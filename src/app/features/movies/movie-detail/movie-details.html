@@ -1,0 +1,23 @@
+<div class="movies-container">
+    <div class="mb-4 flex items-center justify-between gap-3">
+        <div class="flex gap-4">
+            <a routerLink="/admin/movies">← Back</a>
+            <h3 class="text-xl font-semibold text-slate-900">Movies</h3>
+        </div>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
+        @if (movie$ | async; as data) {
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div class="mb-3 flex items-center justify-between gap-3">
+                <img [src]="data.movie.posterURL" [alt]="data.movie.title" />
+            </div>
+            <div class="movie-info">
+                <h2>{{ data.movie.title }}</h2>
+                <p> IMDb ID: {{ data.movie.imdbId }} </p>
+            </div>
+        </div>
+        } @else {
+        <app-loader></app-loader>
+        }
+    </div>
+</div>

@@ -80,13 +80,14 @@ export class AdminLayoutComponent {
 
   readonly navigation = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: '◫' },
-    { path: '/admin/users', label: 'Users', icon: '👥' },
-    { path: '/admin/roles', label: 'Roles', icon: '🛡️' },
-    { path: '/admin/categories', label: 'Categories', icon: '📚' },
-    { path: '/admin/products', label: 'Products', icon: '🍽️' },
     { path: '/admin/orders', label: 'Orders', icon: '🧾' },
-    { path: '/admin/customers', label: 'Customers', icon: '🧍' },
-    { path: '/admin/settings', label: 'Settings', icon: '⚙️' }
+    { path: '/admin/products', label: 'Products', icon: '🍽️' },
+    { path: '/admin/categories', label: 'Categories', icon: '📚' },
+    { path: '/admin/users', label: 'Users', icon: '👥' },
+    { path: '/admin/roles', label: 'Roles', icon: '🛡️' },    
+    { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
+    { path: '/admin/movies', label: 'Movies', icon: '🎬' },
+
   ];
 
   pageTitle = 'Dashboard';

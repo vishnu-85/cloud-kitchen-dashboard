@@ -1,0 +1,26 @@
+<div class="movies-container">
+    <div class="mb-4 flex items-center justify-between gap-3">
+        <h3 class="text-xl font-semibold text-slate-900">Movies</h3>
+    </div>
+    <div class="grid gap-4 md:grid-cols-3 xl:grid-cols-4">
+        @if (movies().length>0) {
+        @for (movie of movies(); track movie.id) {
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div class="mb-3 flex items-center justify-between gap-3">
+                <img [src]="movie.posterURL" [alt]="movie.title" (click)="WatchMovie(movie.id)" class="pointer" />
+            </div>
+            <div class="movie-info">
+                <h2>{{ movie.title }}</h2>
+                <p> IMDb ID: {{ movie.imdbId }} </p>
+                <button type="button" (click)="WatchMovie(movie.id)"
+                    class="rounded-xl bg-orange-500 px-3 py-2 text-sm font-medium text-white pointer">
+                    Watch Movie
+                </button>
+            </div>
+        </div>
+        }
+        } @else {
+       <app-loader></app-loader>
+        }
+    </div>
+</div>
