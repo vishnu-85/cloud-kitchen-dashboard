@@ -99,6 +99,21 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
+  updateStatus(id:any, event:any){
+    this.loading = true;
+    this.errorMessage = '';
+    this.service.update(id, { isActive: event.target.checked}).subscribe({
+      next: () => {
+        this.loading = false;
+        this.loadCategories();
+      },
+      error: () => {
+        this.loading = false;
+        this.errorMessage = 'Unable to delete category.';
+      }
+    });
+  }
+
   resetForm(): void {
     this.form.reset({
       name: '',

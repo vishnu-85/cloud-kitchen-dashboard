@@ -21,6 +21,6 @@ export class CategoriesService {
   }
 
   remove(id: string): Observable<void> {
-    return this.api.delete<void>(`/categories/${id}`);
+    return this.api.delete<void>(`/categories/delete/${id}`);
   }
 }
