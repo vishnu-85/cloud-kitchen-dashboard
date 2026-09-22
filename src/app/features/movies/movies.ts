@@ -16,13 +16,6 @@ const GET_MOVIES = gql`
   }
 `;
 
-interface Movie {
-  id: string;
-  imdbId?: string;
-  posterURL?: string;
-  title?: string;
-}
-
 @Component({
   selector: 'app-movies',
   standalone: true,
@@ -32,22 +25,23 @@ interface Movie {
 })
 export class Movies implements OnInit {
 
-  // public movies$!: Observable<Movie[]>;
+  public movies$!: Observable<any>;
 
   public movies:any = signal([])
   constructor(private readonly apollo: Apollo, private router: Router) { }
 
   ngOnInit(): void {
-    this.apollo
-      .watchQuery<{ movies: Movie[] }>({
+   this.movies$ = this.apollo
+      .watchQuery<any>({
         query: GET_MOVIES,
         fetchPolicy: 'network-only'
       })
       .valueChanges.pipe(
         map((result: any) => result.data)
-      ).subscribe(res=> {
-        this.movies.set(res.movies)
-      });
+      )
+      // .subscribe(res=> {
+      //   this.movies.set(res.movies)
+      // });
   }
 
   WatchMovie(id:string){

@@ -14,14 +14,6 @@ const GET_MOVIE = gql`
   }
 `;
 
-interface Movie {
-    id: string;
-    imdbId?: string;
-    posterURL?: string;
-    title?: string;
-}
-
-
 @Component({
     selector: 'app-movie-detail',
     standalone: true,
