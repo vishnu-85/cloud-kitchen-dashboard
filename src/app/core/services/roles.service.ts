@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Role } from '../models/role.model';
+import { Role, RolePayload } from '../models/role.model';
 import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,11 +11,11 @@ export class RolesService {
     return this.api.get<Role[]>('/roles');
   }
 
-  create(payload: Partial<Role>): Observable<Role> {
+  create(payload: RolePayload): Observable<Role> {
     return this.api.post<Role>('/roles', payload);
   }
 
-  update(id: string, payload: Partial<Role>): Observable<Role> {
+  update(id: string, payload: Partial<RolePayload>): Observable<Role> {
     return this.api.patch<Role>(`/roles/${id}`, payload);
   }
 

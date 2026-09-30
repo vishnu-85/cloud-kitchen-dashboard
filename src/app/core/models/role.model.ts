@@ -1,7 +1,9 @@
 export interface Role {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   permissions: string[];
-  status: 'active' | 'inactive';
+  isActive: boolean;
 }
+
+export type RolePayload = Pick<Role, 'name' | 'description' | 'permissions' | 'isActive'>;
