@@ -41,8 +41,8 @@ import { AuthService } from '../../core/services/auth.service';
                 {{ initials() }}
               </div>
               <div>
-                <p class="text-sm font-medium text-white">{{ currentUser()?.name }} {{ currentUser()?.lastName }}</p>
-                <p class="text-xs text-slate-400">{{ currentUser()?.role }}</p>
+                <p class="text-sm font-medium text-white">{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</p>
+                <p class="text-xs text-slate-400">{{ currentUser()?.roleId }}</p>
               </div>
             </div>
             <button (click)="logout()" class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10">
@@ -110,7 +110,7 @@ export class AdminLayoutComponent {
       return 'AD';
     }
 
-    return `${user.name.charAt(0)}`.toUpperCase();
+    return `${user.firstName.charAt(0)}`.toUpperCase();
   }
 
   logout(): void {

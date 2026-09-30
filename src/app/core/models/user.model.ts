@@ -2,20 +2,22 @@ export interface User {
   _id?: string;
   id?: string;
   email: string;
-  name: string;
+  firstName: string;
   lastName: string;
-  role: string | { _id: string; name: string };
+  roleId: string;
   roleName?: string;
   isActive?: boolean;
   status?: 'active' | 'inactive' | 'pending';
   avatar?: string;
   createdAt?: string;
+  phone: string
 }
 
 export interface UserUpdatePayload {
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  roleId: string;
   isActive: boolean;
+  phone: string
 }

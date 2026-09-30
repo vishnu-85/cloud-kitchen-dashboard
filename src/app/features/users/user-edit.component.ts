@@ -32,8 +32,8 @@ import { UsersService } from '../../core/services/users.service';
         <div class="grid gap-5 md:grid-cols-2">
           <div class="flex flex-col gap-1.5">
             <label for="user-name" class="text-sm font-semibold text-slate-700">First name</label>
-            <input id="user-name" formControlName="name" autocomplete="given-name" class="rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" />
-            @if (form.controls.name.touched && form.controls.name.invalid) {
+            <input id="user-name" formControlName="firstName" autocomplete="given-name" class="rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" />
+            @if (form.controls.firstName.touched && form.controls.firstName.invalid) {
               <span class="text-sm text-red-700">Enter a name.</span>
             }
           </div>
@@ -52,14 +52,18 @@ import { UsersService } from '../../core/services/users.service';
             }
           </div>
           <div class="flex flex-col gap-1.5 md:col-span-2">
+            <label for="user-phone" class="text-sm font-semibold text-slate-700">Phone</label>
+            <input id="user-phone" type="tel" formControlName="phone" autocomplete="tel" class="rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" />
+          </div>
+          <div class="flex flex-col gap-1.5 md:col-span-2">
             <label for="user-role" class="text-sm font-semibold text-slate-700">Role</label>
-            <select id="user-role" formControlName="role" class="rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100">
+            <select id="user-role" formControlName="roleId" class="rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100">
               <option value="" disabled>{{ isLoadingRoles() ? 'Loading roles…' : 'Select a role' }}</option>
               @for (role of roles(); track role._id) {
                 <option [value]="role._id">{{ role.name }}</option>
               }
             </select>
-            @if (form.controls.role.touched && form.controls.role.invalid) {
+            @if (form.controls.roleId.touched && form.controls.roleId.invalid) {
               <span class="text-sm text-red-700">Select a role.</span>
             }
           </div>
@@ -96,11 +100,12 @@ export class UserEditComponent implements OnInit {
   private loadedUser: User | null = null;
 
   readonly form = this.fb.group({
-    name: ['', Validators.required],
+    firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    role: ['', Validators.required],
-    isActive: [true]
+    roleId: ['', Validators.required],
+    isActive: [true],
+    phone: ['']
   });
 
   ngOnInit(): void {
@@ -189,14 +194,15 @@ export class UserEditComponent implements OnInit {
 
   private populateForm(user: User): void {
     this.loadedUser = user;
-    const rawRole = typeof user.role === 'string' ? user.role : user.role?._id;
-    const roleId = this.roles().find((role) => role._id === rawRole || role.name === rawRole)?. _id ?? rawRole ?? '';
+    // const rawRole = typeof user.role === 'string' ? user.role : user.role;
+    // const roleId = this.roles().find((role) => role._id === rawRole || role.name === rawRole)?. _id ?? rawRole ?? '';
     this.form.setValue({
-      name: user.name ?? '',
+      firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       email: user.email ?? '',
-      role: roleId,
-      isActive: user.isActive ?? user.status === 'active'
+      roleId: user.roleId,
+      isActive: user.isActive ?? user.status === 'active',
+      phone: user.phone ?? ''
     });
   }
 

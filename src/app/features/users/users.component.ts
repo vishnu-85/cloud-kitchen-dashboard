@@ -28,6 +28,7 @@ import { UsersService } from '../../core/services/users.service';
             <tr>
               <th class="px-4 py-3">Name</th>
               <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">Phone</th>
               <th class="px-4 py-3">Role</th>
               <th class="px-4 py-3">Status</th>
               <th class="px-4 py-3 text-right">Action</th>
@@ -36,8 +37,9 @@ import { UsersService } from '../../core/services/users.service';
           <tbody>
             @for (user of users(); track getUserId(user)) {
               <tr class="border-t border-slate-200">
-                <td class="px-4 py-3">{{ user.name }}</td>
+                <td class="px-4 py-3">{{ user.firstName || ''}} {{ user.lastName || '' }}</td>
                 <td class="px-4 py-3 text-slate-600">{{ user.email }}</td>
+                <td class="px-4 py-3 text-slate-600">{{ user.phone }}</td>
                 <td class="px-4 py-3">{{ roleName(user) }}</td>
                 <td class="px-4 py-3">
                   <span class="rounded-full px-2 py-1 text-xs font-medium" [ngClass]="isActive(user) ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'">
@@ -102,7 +104,7 @@ export class UsersComponent implements OnInit {
   }
 
   roleName(user: User): string {
-    return user.roleName ?? (typeof user.role === 'string' ? user.role : user.role.name);
+    return user.roleName ?? (typeof user.roleId === 'string' ? user.roleId : user.roleName || '');
   }
 
   isActive(user: User): boolean {
