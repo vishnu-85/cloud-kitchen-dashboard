@@ -32,11 +32,11 @@ export class MovieDetails implements OnInit {
         this.activateRouter.params.subscribe((res: any) => {
             this.movieId = res.id;            
         })
-       this.movie$ = this.apollo
+        this.movie$ = this.apollo
             .watchQuery({
                 query: GET_MOVIE,
                 variables: {
-                movieId: this.movieId
+                    movieId: this.movieId
                 },
                 fetchPolicy: 'network-only'
             })
