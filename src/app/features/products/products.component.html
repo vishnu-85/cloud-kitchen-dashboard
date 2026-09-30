@@ -2,6 +2,7 @@
     <div class="mb-4 flex items-center justify-between">
         <h3 class="text-xl font-semibold text-slate-900">Products</h3>
         <div class="flex gap-2">
+            <a routerLink="/admin/products/create" class="rounded-xl bg-orange-600 px-3 py-2 text-sm font-medium text-white hover:bg-orange-700">Create product</a>
             <button class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
                 (click)="downloadTemplate()">Export Template</button>
             <input type="file" accept=".xlsx,.xls,.csv" (change)="onFileSelected($event)" class="hidden" #fileInput />
@@ -18,36 +19,40 @@
                     @for(col of displayColumns; track col) {
                     <th class="px-4 py-3">{{ col }}</th>
                     }
+                    <th class="px-4 py-3 text-right">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @for (product of products(); track product.name) {
                 <tr class="border-t border-slate-200">
-                    <td class="px-4 py-3"> <img [src]="product.image" alt="{{ product.name }}"
+                    <td class="px-4 py-3 align-top"> <img [src]="product.image" alt="{{ product.name }}"
                             class="h-10 w-10 rounded-full object-cover" /></td>
 
                     @for(col of columns; track col) {
                         @if(col != 'isAvailable' && col != 'action' && col != 'categoryId'){
-                        <td class="px-4 py-3">{{ product[col] }}</td>
+                        <td class="px-4 py-3 align-top">
+                           @if(col == "description"){ <span class="" style="width: 400px; display: inline-block;">{{ product[col] }}</span>}
+                           @if(col !== "description"){ <span class="truncate">{{ product[col] }}</span>}
+                        </td>
                         }
                         @if (col == 'categoryId') {
-                            <td class="px-4 py-3">{{ product[col].name }}</td>
+                            <td class="px-4 py-3 align-top">{{ product[col]?.name ?? product[col] }}</td>
                         }
                         @if (col == 'isAvailable') {
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3 align-top">
                             <span class="rounded-full px-2 py-1 text-xs font-medium"
                                 [ngClass]="product.isAvailable ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'">
                                 {{ product.isAvailable ? 'Available' : 'Low stock' }}
                             </span>
                         </td>
-                        } @else if (col == 'action') {
-                        <td class="px-4 py-3 text-right">
-                            <button type="button" (click)="deleteProduct(product.id)" class="text-sm font-medium text-red-600">
-                                Delete
-                            </button>
-                        </td>
                         }
                     }
+                    <td class="flex gap-3 px-4 py-3 align-top text-right">
+                        <a [routerLink]="['/admin/products', product._id, 'edit']" [state]="{ product: product }"
+                            class="text-sm font-medium text-orange-700 hover:text-orange-800">Edit</a>
+                        <button type="button" (click)="deleteProduct(product._id)"
+                            class="text-sm font-medium text-red-600">Delete</button>
+                    </td>
                 </tr>
                 }
             </tbody>

@@ -1,0 +1,162 @@
+<main class="mx-auto max-w-5xl">
+  <header class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-widest text-orange-700">Catalog</p>
+      <h1 class="mt-1 text-3xl font-bold text-slate-950">{{ productId() ? 'Edit product' : 'Create product' }}</h1>
+      <p class="mt-2 text-sm text-slate-600">{{ productId() ? 'Update this dish and its menu details.' : 'Add a dish and its availability details to your menu.' }}</p>
+    </div>
+    <a routerLink="/admin/products" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Back to products</a>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
+    @if (isLoadingProduct()) {
+      <p class="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600" role="status">Loading product details…</p>
+    }
+    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+      <h2 class="mb-5 text-lg font-semibold text-slate-900">Product details</h2>
+      <div class="grid gap-5 md:grid-cols-2">
+        <div class="field">
+          <label for="categoryId">Category <span aria-hidden="true">*</span></label>
+          <select id="categoryId" formControlName="categoryId" [attr.aria-invalid]="form.controls.categoryId.invalid && form.controls.categoryId.touched">
+            <option value="" disabled>Select a category</option>
+            @for (category of categories(); track category._id) {
+              <option [value]="category._id">{{ category.name }}</option>
+            }
+          </select>
+          @if (isLoadingCategories()) {
+            <p class="field-hint">Loading categories…</p>
+          } @else if (categoryError()) {
+            <p class="field-error" role="alert">{{ categoryError() }}</p>
+          } @else if (categories().length === 0) {
+            <p class="field-hint">No categories are available. Add a category before creating a product.</p>
+          } @else if (form.controls.categoryId.touched && form.controls.categoryId.hasError('required')) {
+            <p class="field-error">Choose a category.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="name">Product name <span aria-hidden="true">*</span></label>
+          <input id="name" type="text" formControlName="name" maxlength="100" autocomplete="off" />
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <p class="field-error">Enter 2 to 100 characters.</p>
+          }
+        </div>
+
+        <div class="field md:col-span-2">
+          <label for="slug">Slug <span aria-hidden="true">*</span></label>
+          <input id="slug" type="text" formControlName="slug" maxlength="120" autocomplete="off" />
+          @if (form.controls.slug.touched && form.controls.slug.invalid) {
+            <p class="field-error">Use up to 120 lowercase letters, numbers, and single hyphens.</p>
+          }
+        </div>
+
+        <div class="field md:col-span-2">
+          <label for="description">Description <span aria-hidden="true">*</span></label>
+          <textarea id="description" formControlName="description" rows="4" maxlength="500"></textarea>
+          <div class="flex justify-between gap-4">
+            @if (form.controls.description.touched && form.controls.description.invalid) {
+              <p class="field-error">Enter a description between 10 and 500 characters.</p>
+            } @else {
+              <span></span>
+            }
+            <span class="field-hint">{{ form.controls.description.value.length }}/500</span>
+          </div>
+        </div>
+
+        <div class="field md:col-span-2">
+          <label for="image">Primary image path or URL</label>
+          <input id="image" type="text" formControlName="image" placeholder="/images/chicken-biryani.jpg" />
+        </div>
+
+        <div class="field md:col-span-2">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <span class="text-sm font-semibold text-slate-700">Additional image paths or URLs</span>
+            <button type="button" (click)="addImagePath()" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Add image</button>
+          </div>
+          <div formArrayName="images" class="space-y-2">
+            @for (image of imagePaths.controls; track $index; let index = $index) {
+              <div class="flex gap-2">
+                <input [id]="'image-path-' + index" type="text" [formControlName]="index" [attr.aria-label]="'Additional image path ' + (index + 1)" placeholder="/images/another-view.jpg" />
+                <button type="button" (click)="removeImagePath(index)" [attr.aria-label]="'Remove image path ' + (index + 1)" class="rounded-lg border border-slate-300 px-3 text-sm text-slate-700 hover:bg-slate-50">Remove</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+      <h2 class="mb-5 text-lg font-semibold text-slate-900">Pricing and preparation</h2>
+      <div class="grid gap-5 md:grid-cols-3">
+        <div class="field">
+          <label for="price">Price <span aria-hidden="true">*</span></label>
+          <input id="price" type="number" min="0" step="0.01" formControlName="price" />
+          @if (form.controls.price.touched && form.controls.price.invalid) {
+            <p class="field-error">Enter a price of 0 or more.</p>
+          }
+        </div>
+        <div class="field">
+          <label for="discountPrice">Discount price</label>
+          <input id="discountPrice" type="number" min="0" step="0.01" formControlName="discountPrice" />
+          @if (form.controls.discountPrice.touched && form.controls.discountPrice.invalid) {
+            <p class="field-error">Discount price must be 0 or more.</p>
+          } @else if (form.hasError('discountPriceExceedsPrice')) {
+            <p class="field-error">Discount price cannot exceed the regular price.</p>
+          }
+        </div>
+        <div class="field">
+          <label for="preparationTime">Preparation time (minutes) <span aria-hidden="true">*</span></label>
+          <input id="preparationTime" type="number" min="1" step="1" formControlName="preparationTime" />
+          @if (form.controls.preparationTime.touched && form.controls.preparationTime.invalid) {
+            <p class="field-error">Enter at least 1 minute.</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+      <h2 class="mb-5 text-lg font-semibold text-slate-900">Menu attributes</h2>
+      <div class="grid gap-5 md:grid-cols-2">
+        <div class="field">
+          <label for="foodType">Food type</label>
+          <select id="foodType" formControlName="foodType">
+            <option value="veg">Vegetarian</option>
+            <option value="non-veg">Non-vegetarian</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="spiceLevel">Spice level</label>
+          <select id="spiceLevel" formControlName="spiceLevel">
+            <option value="mild">Mild</option>
+            <option value="medium">Medium</option>
+            <option value="hot">Hot</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="stock">Stock <span aria-hidden="true">*</span></label>
+          <input id="stock" type="number" min="0" step="1" formControlName="stock" />
+          @if (form.controls.stock.touched && form.controls.stock.invalid) {
+            <p class="field-error">Enter a stock quantity of 0 or more.</p>
+          }
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <label class="toggle-field"><input type="checkbox" formControlName="isSpicy" /> Spicy</label>
+          <label class="toggle-field"><input type="checkbox" formControlName="isAvailable" /> Available</label>
+          <label class="toggle-field"><input type="checkbox" formControlName="isFeatured" /> Featured</label>
+          <label class="toggle-field"><input type="checkbox" formControlName="isBestseller" /> Bestseller</label>
+        </div>
+      </div>
+    </section>
+
+    @if (errorMessage()) {
+      <p class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <footer class="flex flex-wrap justify-end gap-3 pb-6">
+      <a routerLink="/admin/products" class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</a>
+      <button type="submit" [disabled]="isSaving() || isLoadingProduct() || isLoadingCategories() || categories().length === 0" class="rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60">
+        {{ isSaving() ? (productId() ? 'Saving…' : 'Creating…') : (productId() ? 'Save changes' : 'Create product') }}
+      </button>
+    </footer>
+  </form>
+</main>

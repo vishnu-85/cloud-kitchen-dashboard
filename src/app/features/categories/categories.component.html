@@ -8,27 +8,29 @@
 
   @if (showForm) {
     <form [formGroup]="form" (ngSubmit)="save()" class="mb-5 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 md:grid-cols-2">
+      <h4 class="md:col-span-2 text-lg font-semibold text-slate-900">{{ editingCategoryId ? 'Edit category' : 'Create category' }}</h4>
       <div class="md:col-span-2">
         <label class="mb-1 block text-sm font-medium text-slate-700">Name</label>
         <input formControlName="name" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-orange-400" />
       </div>
       <div class="md:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-700">Slug</label>
+            <input formControlName="slug" 
+                class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-orange-400"/>
+        </div>
+      <div class="md:col-span-2">
         <label class="mb-1 block text-sm font-medium text-slate-700">Description</label>
         <textarea formControlName="description" rows="3" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-orange-400"></textarea>
       </div>
-        <div class="md:col-span-2">
-            <label class="mb-1 block text-sm font-medium text-slate-700">Slug</label>
-            <textarea formControlName="slug" rows="3"
-                class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-orange-400"></textarea>
-        </div>
+        
         <div class="md:col-span-2">
             <label class="mb-1 block text-sm font-medium text-slate-700">Image</label>
             <input type="text" formControlName="image" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-orange-400" />
         </div>
       <div class="md:col-span-2 flex justify-end gap-2">
-        <button type="button" (click)="resetForm()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700">Reset</button>
+        <button type="button" (click)="resetForm()" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700">{{ editingCategoryId ? 'Cancel edit' : 'Reset' }}</button>
         <button type="submit" [disabled]="loading" class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">
-          {{ loading ? 'Saving...' : 'Save' }}
+          {{ loading ? 'Saving...' : (editingCategoryId ? 'Update category' : 'Create category') }}
         </button>
       </div>
     </form>
@@ -49,6 +51,9 @@
              <h4 class="text-lg font-semibold text-slate-900">{{ category.name }}</h4>
           </span>
           <div> 
+            <button type="button" (click)="editCategory(category)" class="mr-2 rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-white" [attr.aria-label]="'Edit ' + category.name">
+              Edit
+            </button>
             <label class="switch">
               <input type="checkbox" [checked]="category.isActive" (change)="updateStatus(category._id, $event)">
               <span class="slider">

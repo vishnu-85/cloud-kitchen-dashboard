@@ -15,16 +15,17 @@ export class CategoriesComponent implements OnInit {
   private readonly service = inject(CategoriesService);
   private readonly fb = inject(FormBuilder);
 
-  categories: any = signal([]);
+  categories = signal<Category[]>([]);
   loading = false;
   showForm = false;
   errorMessage = '';
+  editingCategoryId: string | null = null;
 
   form = this.fb.nonNullable.group({
     name: ['', Validators.required],
     description: ['', Validators.required],
     slug: ['', Validators.required],
-    image: []
+    image: ['']
   });
 
   ngOnInit(): void {
@@ -70,7 +71,12 @@ export class CategoriesComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    this.service.create(this.form.getRawValue()).subscribe({
+    const payload = this.form.getRawValue();
+    const request = this.editingCategoryId
+      ? this.service.update(this.editingCategoryId, payload)
+      : this.service.create(payload);
+
+    request.subscribe({
       next: () => {
         this.loading = false;
         this.resetForm();
@@ -79,9 +85,21 @@ export class CategoriesComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = 'Unable to create category.';
+        this.errorMessage = `Unable to ${this.editingCategoryId ? 'update' : 'create'} category.`;
       }
     });
+  }
+
+  editCategory(category: Category): void {
+    this.editingCategoryId = category._id;
+    this.form.setValue({
+      name: category.name,
+      description: category.description,
+      slug: category.slug,
+      image: category.image ?? ''
+    });
+    this.errorMessage = '';
+    this.showForm = true;
   }
 
   deleteCategory(id: string): void {
@@ -117,7 +135,10 @@ export class CategoriesComponent implements OnInit {
   resetForm(): void {
     this.form.reset({
       name: '',
-      description: ''
+      description: '',
+      slug: '',
+      image: ''
     });
+    this.editingCategoryId = null;
   }
 }

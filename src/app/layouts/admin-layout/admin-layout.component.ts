@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
 
@@ -54,11 +56,9 @@ import { AuthService } from '../../core/services/auth.service';
             <div class="flex items-center justify-between px-6 py-5">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">Operations overview</p>
-                <h2 class="mt-1 text-2xl font-bold text-slate-900">{{ pageTitle }}</h2>
+                <h2 class="mt-1 text-2xl font-bold text-slate-900">{{ pageTitle() }}</h2>
               </div>
-              <button class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800">
-                + New order
-              </button>
+               
             </div>
           </header>
 
@@ -73,6 +73,19 @@ import { AuthService } from '../../core/services/auth.service';
 export class AdminLayoutComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly pageTitle = signal('Dashboard');
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.updatePageTitle());
+  }
 
   currentUser() {
     return this.auth.getCurrentUser();
@@ -85,12 +98,11 @@ export class AdminLayoutComponent {
     { path: '/admin/categories', label: 'Categories', icon: '📚' },
     { path: '/admin/users', label: 'Users', icon: '👥' },
     { path: '/admin/roles', label: 'Roles', icon: '🛡️' },    
+    { path: '/admin/permissions', label: 'Permissions', icon: '🔑' },
     { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
     { path: '/admin/movies', label: 'Movies', icon: '🎬' },
 
   ];
-
-  pageTitle = 'Dashboard';
 
   initials(): string {
     const user = this.auth.getCurrentUser();
@@ -104,5 +116,17 @@ export class AdminLayoutComponent {
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/login']);
+  }
+
+  private updatePageTitle(): void {
+    let activeRoute = this.route;
+    let title = 'Dashboard';
+
+    while (activeRoute.firstChild) {
+      activeRoute = activeRoute.firstChild;
+    }
+
+    title = activeRoute.snapshot?.data?.['title'] ?? title;
+    this.pageTitle.set(title);
   }
 }

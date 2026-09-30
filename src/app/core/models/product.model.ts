@@ -23,6 +23,25 @@ export interface Product {
   stock: number;
 }
 
+export interface ProductCreatePayload {
+  categoryId: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  discountPrice: number;
+  image: string;
+  images: string[];
+  foodType: 'veg' | 'non-veg';
+  isSpicy: boolean;
+  spiceLevel: 'mild' | 'medium' | 'hot';
+  preparationTime: number;
+  isAvailable: boolean;
+  isFeatured: boolean;
+  isBestseller: boolean;
+  stock: number;
+}
+
 export interface Category {
   _id: string;
   name: string;

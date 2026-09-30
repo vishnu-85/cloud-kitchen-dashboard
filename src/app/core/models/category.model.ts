@@ -1,8 +1,9 @@
 export interface Category {
-  id: string;
+  _id: string;
   name: string;
   slug: string;
   description: string;
   isActive: boolean;
+  image?: string;
   menuCount?: number;
 }
