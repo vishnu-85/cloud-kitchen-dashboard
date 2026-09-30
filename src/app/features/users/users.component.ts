@@ -1,5 +1,6 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { User } from '../../core/models/user.model';
 import { UsersService } from '../../core/services/users.service';
@@ -7,7 +8,7 @@ import { UsersService } from '../../core/services/users.service';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, NgClass],
+  imports: [CommonModule, NgClass, RouterLink],
   template: `
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div class="mb-4 flex items-center justify-between">
@@ -33,20 +34,23 @@ import { UsersService } from '../../core/services/users.service';
             </tr>
           </thead>
           <tbody>
-            @for (user of users(); track user.id) {
+            @for (user of users(); track getUserId(user)) {
               <tr class="border-t border-slate-200">
                 <td class="px-4 py-3">{{ user.name }}</td>
                 <td class="px-4 py-3 text-slate-600">{{ user.email }}</td>
-                <td class="px-4 py-3">{{ user.roleName }}</td>
+                <td class="px-4 py-3">{{ roleName(user) }}</td>
                 <td class="px-4 py-3">
-                  <span class="rounded-full px-2 py-1 text-xs font-medium" [ngClass]="user.isActive ? 'bg-emerald-100 text-emerald-700' : user.isActive === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-600'">
-                    {{ user.isActive}}
+                  <span class="rounded-full px-2 py-1 text-xs font-medium" [ngClass]="isActive(user) ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'">
+                    {{ isActive(user) ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <button type="button" (click)="deleteUser(user.id)" class="text-sm font-medium text-red-600">
+                  <a [routerLink]="['/admin/users', getUserId(user), 'edit']" [state]="{ user: user }" class="mr-3 text-sm font-medium text-orange-700 hover:text-orange-800">
+                    Edit
+                  </a>
+                  <!-- <button type="button" (click)="deleteUser(getUserId(user))" class="text-sm font-medium text-red-600">
                     Delete
-                  </button>
+                  </button> -->
                 </td>
               </tr>
             }
@@ -59,7 +63,7 @@ import { UsersService } from '../../core/services/users.service';
 export class UsersComponent implements OnInit {
   private readonly service = inject(UsersService);
 
-  users:any = signal([]);
+  users = signal<User[]>([]);
   errorMessage = '';
 
   ngOnInit(): void {
@@ -68,8 +72,9 @@ export class UsersComponent implements OnInit {
 
   loadUsers(): void {
     this.service.getAll().subscribe({
-      next: (data:any) => {
-        this.users.set(data.data);
+      next: (response) => {
+        const result = response as unknown as { data?: User[] } | User[];
+        this.users.set(Array.isArray(result) ? result : result.data ?? []);
         this.errorMessage = '';
       },
       error: () => {
@@ -79,11 +84,28 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(id: string): void {
+    if (!id) {
+      this.errorMessage = 'Unable to find this user.';
+      return;
+    }
+
     this.service.delete(id).subscribe({
       next: () => this.loadUsers(),
       error: () => {
         this.errorMessage = 'Unable to delete user.';
       }
     });
+  }
+
+  getUserId(user: User): string {
+    return user._id ?? user.id ?? '';
+  }
+
+  roleName(user: User): string {
+    return user.roleName ?? (typeof user.role === 'string' ? user.role : user.role.name);
+  }
+
+  isActive(user: User): boolean {
+    return user.isActive ?? user.status === 'active';
   }
 }

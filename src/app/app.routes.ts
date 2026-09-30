@@ -23,6 +23,12 @@ export const routes: Routes = [
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent)
       },
       {
+        path: 'users/:id/edit',
+        data: { title: 'Edit User' },
+        loadComponent: () =>
+          import('./features/users/user-edit.component').then((m) => m.UserEditComponent)
+      },
+      {
         path: 'users',
         data: { title: 'Users' },
         loadComponent: () =>
