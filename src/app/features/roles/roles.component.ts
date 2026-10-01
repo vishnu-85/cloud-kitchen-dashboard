@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgIconComponent } from '@ng-icons/core';
 
 import { Permission } from '../../core/models/permission.model';
 import { Role } from '../../core/models/role.model';
@@ -10,7 +11,7 @@ import { RolesService } from '../../core/services/roles.service';
 
 @Component({
   selector: 'app-roles',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgIconComponent],
   templateUrl: 'roles.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

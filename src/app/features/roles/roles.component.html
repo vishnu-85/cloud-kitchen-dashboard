@@ -90,7 +90,9 @@
                 }
               </div>
               <div class="mt-4 flex justify-end">
-                <button type="button" (click)="editRole(role)" class="text-sm font-medium text-orange-700 hover:text-orange-800">Edit role</button>
+                <button type="button" (click)="editRole(role)" title="Edit role" [attr.aria-label]="'Edit ' + role.name" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-orange-700 hover:bg-orange-50">
+                  <ng-icon name="heroPencilSquare" size="18" aria-hidden="true" />
+                </button>
               </div>
             </article>
           }

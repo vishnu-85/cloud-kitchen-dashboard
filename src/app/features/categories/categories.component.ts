@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgIconComponent } from '@ng-icons/core';
 
 import { Category } from '../../core/models/category.model';
 import { CategoriesService } from '../../core/services/categories.service';
@@ -8,7 +9,7 @@ import { CategoriesService } from '../../core/services/categories.service';
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgIconComponent],
   templateUrl: './categories.component.html'
 })
 export class CategoriesComponent implements OnInit {

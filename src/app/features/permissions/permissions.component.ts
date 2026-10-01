@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgIconComponent } from '@ng-icons/core';
 
 import { Permission } from '../../core/models/permission.model';
 import { PermissionsService } from '../../core/services/permissions.service';
 
 @Component({
   selector: 'app-permissions',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgIconComponent],
   template: `
     <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <header class="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -69,8 +70,8 @@ import { PermissionsService } from '../../core/services/permissions.service';
                   <p class="mt-1 break-all font-mono text-sm text-slate-600">{{ permission.name }}</p>
                 </div>
                 <div class="flex shrink-0 gap-3">
-                  <button type="button" (click)="editPermission(permission)" class="text-sm font-medium text-orange-700 hover:text-orange-800" [attr.aria-label]="'Edit ' + permission.label">Edit</button>
-                  <button type="button" (click)="deletePermission(permission)" class="text-sm font-medium text-red-700 hover:text-red-800" [attr.aria-label]="'Delete ' + permission.label">Delete</button>
+                  <button type="button" (click)="editPermission(permission)" title="Edit permission" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-orange-700 hover:bg-orange-50" [attr.aria-label]="'Edit ' + permission.label"><ng-icon name="heroPencilSquare" size="18" aria-hidden="true" /></button>
+                  <button type="button" (click)="deletePermission(permission)" title="Delete permission" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-700 hover:bg-red-50" [attr.aria-label]="'Delete ' + permission.label"><ng-icon name="heroTrash" size="18" aria-hidden="true" /></button>
                 </div>
               </div>
             </article>

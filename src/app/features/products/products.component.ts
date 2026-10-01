@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { NgIconComponent } from '@ng-icons/core';
 
 import { Product } from '../../core/models/product.model';
 import { ProductsService } from '../../core/services/products.service';
@@ -9,7 +10,7 @@ import { ProductsService } from '../../core/services/products.service';
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NgIconComponent],
   templateUrl: './products.component.html'
 })
 export class ProductsComponent implements OnInit {

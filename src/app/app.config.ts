@@ -7,11 +7,14 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache } from '@apollo/client';
+import { provideIcons } from '@ng-icons/core';
+import { heroPencilSquare, heroTrash } from '@ng-icons/heroicons/outline';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    provideIcons({ heroPencilSquare, heroTrash }),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideHttpClient(),
     provideApollo(() => {

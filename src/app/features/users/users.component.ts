@@ -1,6 +1,7 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NgIconComponent } from '@ng-icons/core';
 
 import { User } from '../../core/models/user.model';
 import { UsersService } from '../../core/services/users.service';
@@ -8,7 +9,7 @@ import { UsersService } from '../../core/services/users.service';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, NgClass, RouterLink],
+  imports: [CommonModule, NgClass, RouterLink, NgIconComponent],
   template: `
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div class="mb-4 flex items-center justify-between">
@@ -47,8 +48,8 @@ import { UsersService } from '../../core/services/users.service';
                   </span>
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <a [routerLink]="['/admin/users', getUserId(user), 'edit']" [state]="{ user: user }" class="mr-3 text-sm font-medium text-orange-700 hover:text-orange-800">
-                    Edit
+                  <a [routerLink]="['/admin/users', getUserId(user), 'edit']" [state]="{ user: user }" title="Edit user" [attr.aria-label]="'Edit ' + user.firstName + ' ' + user.lastName" class="mr-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-orange-700 hover:bg-orange-50">
+                    <ng-icon name="heroPencilSquare" size="18" aria-hidden="true" />
                   </a>
                   <!-- <button type="button" (click)="deleteUser(getUserId(user))" class="text-sm font-medium text-red-600">
                     Delete
