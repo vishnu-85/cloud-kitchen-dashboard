@@ -100,7 +100,7 @@ export class AdminLayoutComponent {
     { path: '/admin/roles', label: 'Roles', icon: '🛡️' },    
     { path: '/admin/permissions', label: 'Permissions', icon: '🔑' },
     { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
-    { path: '/admin/movies', label: 'Movies', icon: '🎬' },
+    // { path: '/admin/movies', label: 'Movies', icon: '🎬' },
 
   ];
 
